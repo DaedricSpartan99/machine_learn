@@ -1,5 +1,6 @@
 import numpy as np
 import random as rnd
+from proj1_helpers import *
 
 
 """
@@ -25,7 +26,8 @@ eps = 1e-5
 
 """
 
-# COMPUTE LOSS ET GRADIENT POUR least square GD
+"""
+# COMPUTE LOSS & GRADIENT for least square GD
 
 def compute_loss(y, tx, w):    #using MSE, give L not L_n
         e = y-tx.dot(w)
@@ -36,6 +38,10 @@ def compute_gradient(y, tx, w):
     e = y-tx.dot(w)
     tx_t=tx.T
     return -tx_t.dot(e)/len(y)
+"""
+
+### FUNCTION 1 ###
+
 
 def least_squares_GD(y, tx, initial_w, max_iters, gamma):
     # Define parameters to store w and loss
@@ -47,20 +53,69 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
         gradient = compute_gradient(y,tx, w)
         loss=compute_loss(y,tx,w)
         w = w-gamma*gradient    #update w by the gradient
-         # store w and loss
+        # store w and loss
         ws.append(w)
         losses.append(loss)
-        print("Gradient Descent({bi}/{ti}): loss={l}, w0={w0}, w1={w1}".format(
+        #take the final ones
+    w_opt=ws[-1]
+    loss_opt=losses[-1]
+    return w_opt,loss_opt
+
+"""
+def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
+    """
+    Generate a minibatch iterator for a dataset.
+    Takes as input two iterables (here the output desired values 'y' and the input data 'tx')
+    Outputs an iterator which gives mini-batches of `batch_size` matching elements from `y` and `tx`.
+    Data can be randomly shuffled to avoid ordering in the original data messing with the randomness of the minibatches.
+    Example of use :
+    for minibatch_y, minibatch_tx in batch_iter(y, tx, 32):
+        <DO-SOMETHING>
+    """
+    data_size = len(y)
+
+    if shuffle:
+        shuffle_indices = np.random.permutation(np.arange(data_size))
+        shuffled_y = y[shuffle_indices]
+        shuffled_tx = tx[shuffle_indices]
+    else:
+        shuffled_y = y
+        shuffled_tx = tx
+    for batch_num in range(num_batches):
+        start_index = batch_num * batch_size
+        end_index = min((batch_num + 1) * batch_size, data_size)
+        if start_index != end_index:
+            yield shuffled_y[start_index:end_index], shuffled_tx[start_index:end_index]
+"""
+
+### FUNCTION 2 ###
+
+def least_squares_SGD(y, tx, initial_w, batch_size, max_iters, gamma):
+    if (batch_size>len(y)):
+        print("The batch size was bigger than the whole dataset, it was downsized to match that of the dataset")
+        batch_size=len(y)
+    ws = [initial_w]
+    losses = []
+    w = initial_w
+    for n_iter in range(max_iters):
+        for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size): 
+            gradient = compute_gradient(minibatch_y,minibatch_tx,w) # Can compute the normal gradient for each minibatch
+            loss=compute_loss(minibatch_y,minibatch_tx,w)
+        # TODO: update w by gradient
+        w = w-gamma*gradient
+        # store w and loss
+        ws.append(w)
+        losses.append(loss)
+        print("Stochastic Gradient Descent({bi}/{ti}): loss={l}, w0={w0}, w1={w1}".format(
               bi=n_iter, ti=max_iters - 1, l=loss, w0=w[0], w1=w[1]))
-        
-        w_opt=ws[-1]
-        loss_opt=losses[-1]
+    w_opt=ws[-1]
+    loss_opt=losses[-1]
+
     return w_opt,loss_opt
 
 
-
-
-
+# I don't think we even need this function anymore, plus we deleted grad_n
+"""
 
 def mini_batch_SGD(y, tx, grad_n, initial_w, max_iters, gamma):
 
@@ -91,6 +146,7 @@ def mini_batch_SGD(y, tx, grad_n, initial_w, max_iters, gamma):
         max_iters -= 1
 
     return w
+"""
 
 """
     Compute the cost given a generic cost function.
@@ -102,6 +158,9 @@ def mini_batch_SGD(y, tx, grad_n, initial_w, max_iters, gamma):
     - cost_fct: analytic expression of the cost function.
                 It should take the errors vector containing ( y_n )
         
+"""
+
+
 """
 def compute_cost(y, xt, w, fw, cost_fct):
 
@@ -117,7 +176,7 @@ def compute_cost(y, xt, w, fw, cost_fct):
 
 
 """
-    Particular case of RMSE implementations
+   # Particular case of RMSE implementations
 """
 
 def MSE_fw(xt, w):
@@ -136,12 +195,14 @@ def MSE_cost(y, xt, w):
     return compute_cost(y, xt, w, MSE_fw, MSE_cost_fct)
 
 
-
+"""
 
 
 """
     Methods implementations
 """
+
+### FUNCTION 4 ###
 
 def ridge_regression(y, tx, lambda_):
 
@@ -165,14 +226,20 @@ def ridge_regression(y, tx, lambda_):
     return w, compute_cost(y, tx, w, MSE_fw, cost_fct) 
 
 
+### FUNCTION 3 ###
+
 def least_squares(y, tx):
     
     # Compute weight as particular case of ridge regression, _lambda = 0
     return ridge_regression(y, tx, 0)
 
+"""
 def logistic_sigmoid(z):
     arg = np.exp(z) 
     return arg / (1 + arg)
+"""
+
+### FUNCTION 5 ###
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
     
@@ -235,6 +302,8 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     """ --- RETURN VALUES --- """
     return ws[-1], losses[-1]
 
+
+### FUNCTION 6 ###
 
 def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     
