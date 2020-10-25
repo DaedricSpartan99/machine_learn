@@ -243,7 +243,7 @@ def logistic_sigmoid(z):
 
 def logistic_regression(y, tx, initial_w, max_iters, gamma):
     
-     """
+    """
         Implementation of the Logistic Regression method 
         
         ARGUMENTS :
@@ -307,7 +307,7 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
 
 def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     
-     """
+    """
         Implementation of the Regularized Logistic Regression method 
         
         ARGUMENTS :
