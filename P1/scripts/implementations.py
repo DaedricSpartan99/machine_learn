@@ -7,7 +7,7 @@ import random as rnd
 """
 
 # define threshold constant
-eps = 1e-5
+eps = 1e-10
 
 """
     y = samples vector
@@ -97,19 +97,15 @@ def mini_batch_SGD(y, tx, grad_n, initial_w, max_iters, gamma):
     - y: predictions vector
     - xt: argument samples matrix
     - w: eights
-    - fw: analytic expression for weight function.
-                It should take the xt, w as parameters.
-    - cost_fct: analytic expression of the cost function.
-                It should take the errors vector containing ( y_n )
-        
+    - cost_fct_n: analytic expression of the cost function per element L_n.
 """
-def compute_cost(y, xt, w, fw, cost_fct):
+def compute_cost(y, xt, w, cost_fct_n):
 
     # Errors evaluation
-    errors = y - fw(xt, w)
+    #errors = y - fw(xt, w)
 
     # Compute the cost
-    return np.mean(cost_fct(errors))
+    return np.mean(cost_fct_n(y, xt, w))
 
 
 
@@ -122,18 +118,20 @@ def compute_cost(y, xt, w, fw, cost_fct):
 
 def MSE_fw(xt, w):
 
-    # X^t * w
-    #return np.transpose(xt) * w
-    return np.dot(np.transpose(xt), w)
+    # X * w
+    return np.dot(xt, w)
 
-def MSE_cost_fct(errors):
+# elementwise cost function
+def MSE_cost_fct(y, xt, w):
+
+    errors = y - MSE_fw(xt, w)
 
     # euclidean_norm(errors) / 2
-    return np.dot(errors, errors) / 2
+    return np.power(errors,2) / 2
 
 # compute cost for RMSE particular case
 def MSE_cost(y, xt, w):
-    return compute_cost(y, xt, w, MSE_fw, MSE_cost_fct)
+    return compute_cost(y, xt, w, MSE_cost_fct)
 
 
 
@@ -148,20 +146,19 @@ def ridge_regression(y, tx, lambda_):
     # Compute optimal weights
     N = len(tx) # how many rows, TODO check
     M = len(tx[0]) # how many columns
-    w = None # declare w
+    T = np.dot(np.transpose(tx), tx)
+    xy = np.dot(np.transpose(tx), y)
 
     # add lambda_ contribution, otherwise linear regression
-    if np.abs(lambda_) < eps:   # we consider any lammda < eps to be equal to 0
-        w = np.linalg.solve(tx,y)   
-    else:
-        T = np.dot(np.transpose(tx), tx) + lambda_ * (2*N) * np.identity(M) # dim(T) = M * M
-        xy = np.dot(np.transpose(tx), y)
-        w = np.linalg.solve(T, xy) # compute result following the formula: w * T = X^t * y
+    if np.abs(lambda_) > eps:   # we consider any lammda < eps to be equal to 0
+        T += lambda_ * (2*N) * np.identity(M) # dim(T) = M * M
+
+    w = np.linalg.solve(T, xy) # compute result following the formula: w * T = X^t * y
         
     #THIS PART STILL NEEDS TO BE CHECKED
-    cost_fct = lambda y, tx, w: MSE_cost(y, tx, w) - lambda_ * np.dot(w,w)
+    cost_fct = lambda y, tx, w: MSE_cost(y, tx, w) - lambda_ * np.dot(np.transpose(w),w)
     
-    return w, compute_cost(y, tx, w, MSE_fw, cost_fct) 
+    return w, compute_cost(y, tx, w, cost_fct) 
 
 
 
@@ -169,7 +166,7 @@ def ridge_regression(y, tx, lambda_):
 def logistic_regression_mb(y, tx, initial_w, max_iters, gamma):
 
     # gradient L_n formula: x_n * (sigma(x_n * w) - y_n)
-    grad_n = lambda yn, txn, w: txn * (logistic_sigma(np.dot(ntx, w)) - yn)
+    grad_n = lambda yn, txn, w: txn * (logistic_sigmoid(np.dot(ntx, w)) - yn)
 
     # compute optimal weight
     w = mini_batch_SDG(y, tx, grad_n, initial_w, max_iters, gamma)
@@ -186,128 +183,3 @@ def least_squares(y, tx):
 def logistic_sigmoid(z):
     arg = np.exp(z) 
     return arg / (1 + arg)
-
-def logistic_regression(y, tx, initial_w, max_iters, gamma):
-    
-     """
-        Implementation of the Logistic Regression method 
-        
-        ARGUMENTS :
-        _____________________________________________________
-        |                |                                  |
-        |    y           |    Predictions                   |
-        |    tx          |    Samples                       |
-        |    initial_w   |    Initial weights               |
-        |    max_iters   |    Maximum number of iterations  |
-        |    gamma       |    Step size                     |
-        |________________|__________________________________|    
-            
-        RETURN VALUES :
-        _____________________________________________________
-        |                |                                  |
-        |    w           |    Optimal weights               |
-        |    loss        |    Final loss value              |
-        |________________|__________________________________|
-          
-    """
-    
-    losses = []                   #loss array
-    
-    ws = [initial_w]              #weight array
-    w = initial_w                 #current weight
-    
-    threshold = 1e-8
-    
-    """ --- ITERATIONS --- """
-        
-    for iter in range(max_iter):
-        
-        # gradient L_n formula: x_n * (sigma(x_n * w) - y_n)
-        tx_t=tx.T
-        grad=tx_t.dot( sigmoid (tx.dot(w))-y)
-
-        # loss function
-        loss = np.sum(np.log(1. + np.exp(np.dot(tx, w)))) - np.dot(y.T, np.dot(tx, w))
-
-        # weight
-        w = w - gamma * grad
-        
-        # array filling
-        losses.append(loss)
-        ws.append(w)
-        
-        # log info
-        if iter % 100 == 0:
-            print("Current iteration={i}, loss={l}".format(i=iter, l=loss))
-        
-        # converge criterion
-        if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
-            break
-            
-    
-    """ --- RETURN VALUES --- """
-    return ws[-1], losses[-1]
-
-
-def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
-    
-     """
-        Implementation of the Regularized Logistic Regression method 
-        
-        ARGUMENTS :
-        _____________________________________________________
-        |                |                                  |
-        |    y           |    Predictions                   |
-        |    tx          |    Samples                       |
-        |    lambda_     |    Penalty factor                |
-        |    initial_w   |    Initial weights               |
-        |    max_iters   |    Maximum number of iterations  |
-        |    gamma       |    Step size                     |
-        |________________|__________________________________|    
-            
-        RETURN VALUES :
-        _____________________________________________________
-        |                |                                  |
-        |    w           |    Optimal weights               |
-        |    loss        |    Final loss value              |
-        |________________|__________________________________|
-          
-    """
-    
-    losses = []                   #loss array
-    
-    ws = [initial_w]              #weight array
-    w = initial_w                 #current weight
-    
-    threshold = 1e-8
-    
-    """ --- ITERATIONS --- """
-        
-    for iter in range(max_iter):
-        
-        # gradient L_n formula: x_n * (sigma(x_n * w) - y_n)
-        tx_t=tx.T
-        grad=tx_t.dot( sigmoid (tx.dot(w))-y) + 2 * lambda_ * w
-
-        # loss function
-        loss = np.sum(np.log(1. + np.exp(np.dot(tx, w)))) - np.dot(y.T, np.dot(tx, w)) + lambda_ * np.linalg.norm(w) ** 2
-
-        # weight
-        w = w - gamma * grad
-        
-        # array filling
-        losses.append(loss)
-        ws.append(w)
-        
-        # log info
-        if iter % 100 == 0:
-            print("Current iteration={i}, loss={l}".format(i=iter, l=loss))
-        
-        # converge criterion
-        if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
-            break
-            
-    
-    """ --- RETURN VALUES --- """
-    return ws[-1], losses[-1]
-
