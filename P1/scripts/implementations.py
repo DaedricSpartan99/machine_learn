@@ -4,12 +4,27 @@ import random as rnd
 # define threshold constant
 eps = 1e-5
 
+"""
+    y = samples vector
+    x_n = arguments samples matrix
+
+    grad_n: function pointer taking:
+            - a scalar y_n
+            - a vector of size Nx x_n
+            - a vector of size Nx w_n
+
+    initial_w = initial value of w (of size Nx)
+
+    max_iters = maximum number of iterations
+    gamma = step factor in GD
+
+"""
 def mini_batch_SDG(y, tx, grad_n, initial_w, max_iters, gamma):
 
     N = len(y) # length of samples
     Nx = len(tx[0]) # length of arguments
-    w = initial_w + np.ones(Nx)
-    old_w = initial_w
+    w = initial_w
+    old_w = initial_w - np.ones(Nx)
 
     # iterate
     while max_iters > 0 and (np.norm(w - old_w) / Nx) > eps: # TODO add threshold condition
@@ -21,7 +36,7 @@ def mini_batch_SDG(y, tx, grad_n, initial_w, max_iters, gamma):
         # compute stochastic gradient
         g = np.zeros(Nx)
         for n in B:
-            g += grad_n(grad_n(y[n], tx[n]))
+            g += grad_n(grad_n(y[n], tx[n], w))
         g /= NB
 
         old_w = w
