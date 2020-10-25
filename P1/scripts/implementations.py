@@ -24,6 +24,44 @@ eps = 1e-5
     gamma = step factor in GD
 
 """
+
+# COMPUTE LOSS ET GRADIENT POUR least square GD
+
+def compute_loss(y, tx, w):    #using MSE, give L not L_n
+        e = y-tx.dot(w)
+        cost=(e.dot(e.T))/(2*y.shape[0])  #I think we can remove the .T in e.T
+        return cost
+
+def compute_gradient(y, tx, w):
+    e = y-tx.dot(w)
+    tx_t=tx.T
+    return -tx_t.dot(e)/len(y)
+
+def least_squares_GD(y, tx, initial_w, max_iters, gamma):
+    # Define parameters to store w and loss
+    ws = [initial_w]
+    losses = []
+    w = initial_w
+    #compute gradient and loss
+    for n_iter in range(max_iters):
+        gradient = compute_gradient(y,tx, w)
+        loss=compute_loss(y,tx,w)
+        w = w-gamma*gradient    #update w by the gradient
+         # store w and loss
+        ws.append(w)
+        losses.append(loss)
+        print("Gradient Descent({bi}/{ti}): loss={l}, w0={w0}, w1={w1}".format(
+              bi=n_iter, ti=max_iters - 1, l=loss, w0=w[0], w1=w[1]))
+        
+        w_opt=ws[-1]
+        loss_opt=losses[-1]
+    return w_opt,loss_opt
+
+
+
+
+
+
 def mini_batch_SGD(y, tx, grad_n, initial_w, max_iters, gamma):
 
     N = len(y) # length of samples
