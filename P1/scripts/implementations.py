@@ -135,7 +135,7 @@ def logistic_sigma(z):
     arg = np.exp(z) 
     return arg / (1 + arg)
 
-def logistic_regression(y, tx, initial_w, max_iters, gamma):
+def logistic_regression_modular(y, tx, initial_w, max_iters, gamma):
 
     # gradient L_n formula: x_n * (sigma(x_n * w) - y_n)
     grad_n = lambda yn, txn, w: txn * (logistic_sigma(np.dot(ntx, w)) - yn)
