@@ -83,7 +83,8 @@ def training(samples, lambdas, outfile):
         y, xt, ids = load_csv_data(data)
         N = len(y)
 
-        w = np.zeros(len(xt[0]))
+        w = np.ones(len(xt[0])) * 0.001
+        #w[::2] *= -1
     
         #w, loss = least_squares_GD(y, xt, w, 2000, 1e-6)
 
@@ -91,9 +92,9 @@ def training(samples, lambdas, outfile):
 
         #w, loss = least_squares(y, xt)
         
-        w, loss = ridge_regression(y, xt, 9e-03)
+        #w, loss = ridge_regression(y, xt, 9e-03)
 
-        #w, loss = logistic_regression(y, xt, w, 500, 1e-3)
+        w, loss = logistic_regression(y, xt, w, 2000, 1e-6)
         
         #w, loss = reg_logistic_regression(y, xt, 9e-06, w, 500, 1e-6)
 

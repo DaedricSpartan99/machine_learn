@@ -111,7 +111,8 @@ def least_squares(y, tx):
 
 def sigmoid(z):
     arg = np.exp(-z) 
-    #arg[z > 100] = 0.0
+    print("exp(-z) = ", arg)
+    arg[z > 700] = 0.0
         #arg = np.zeros(len(z))
     return 1.0 / (arg + 1.0)
 
@@ -147,27 +148,28 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     w = initial_w                 #current weight
     
     threshold = 1e-8
+
+    print("w = ", w)
     
     """ --- ITERATIONS --- """
         
     for iter in range(max_iters):
         
         # gradient L_n formula: x_n * (sigma(x_n * w) - y_n)
-        tx_t= np.transpose(tx)
+        tx_t = np.transpose(tx)
         z = np.dot(tx, w)
         print("z = ", z)
-        z[z > 500] = 500
-        z[z < -500] = -500
+        #z[z > 500] = 500
+        #z[z < -500] = -500
 
-        grad=tx_t.dot(sigmoid(z) - y)
-        print(np.linalg.norm(sigmoid(z)))
-        print(np.linalg.norm(y))
-        print(np.linalg.norm(tx))
-        print(np.linalg.norm(grad))
-        input()
+        grad = np.dot(tx_t, sigmoid(z) - y)
+        print("|sigma(Xw)| = ", np.linalg.norm(sigmoid(z)))
+        print("|grad| = ", np.linalg.norm(grad))
 
         # loss function
         loss = np.sum(np.log(1. + np.exp(z))) - np.dot(y.T, np.dot(tx, w))
+        print("Loss = ", loss)
+        input("Tap enter to continue...")
 
         # weight
         w = w - gamma * grad

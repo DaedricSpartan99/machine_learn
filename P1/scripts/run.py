@@ -40,8 +40,8 @@ def main(da, cv):
                     'test_jet_3_wout_mass.csv', 'test_jet_3_with_mass.csv'] 
     
     # if need to split data
-    if da:
-        data_analysis_splitting(TRAIN, TEST, TRAINING_DATA, TESTING_DATA)
+    #if da:
+    #    data_analysis_splitting(TRAIN, TEST, TRAINING_DATA, TESTING_DATA)
 
     """
     methods = [[least_squares_GD, w, 2000, 1e-6],
@@ -68,7 +68,7 @@ def main(da, cv):
     method = "none"
 
     diagnose = open('outputs/train_%s.txt' % (method), 'w')
-    weights, prediction_train = training(TRAINING_DATA, lambdas, diagnose)
+    weights, prediction_train = training([ TRAIN ], lambdas, diagnose)
     #W.append(weights)
     #P.append(prediction_train)
     diagnose.close()
@@ -76,7 +76,7 @@ def main(da, cv):
     print('\nFor method %s: In total, there was %f of good predictions on the training set.\n' % (method, prediction_train))
 
     """ TESTING """
-    test(TESTING_DATA, weights, 'submission.csv')
+    #test(TESTING_DATA, weights, 'submission.csv')
 
 
 # parse entering argument to main
