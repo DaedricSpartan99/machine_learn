@@ -61,9 +61,11 @@ def main(da, cv):
     #method = methods[method_nb] 
 
     #method = "least_square"
-    method = "ridge_regression"
+    #method = "ridge_regression"
     #method = "logistic_regression"
     #method = "reg_logistic_regression"
+
+    method = "none"
 
     diagnose = open('outputs/train_%s.txt' % (method), 'w')
     weights, prediction_train = training(TRAINING_DATA, lambdas, diagnose)

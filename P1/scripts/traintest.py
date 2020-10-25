@@ -91,7 +91,7 @@ def training(samples, lambdas, outfile):
 
         #w, loss = least_squares(y, xt)
         
-        w, loss = ridge_regression(y, xt, 9e-06)
+        #w, loss = ridge_regression(y, xt, 9e-06)
 
         #w, loss = logistic_regression(y, xt, w, 500, 1e-6)
         
