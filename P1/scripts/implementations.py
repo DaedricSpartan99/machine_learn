@@ -114,7 +114,7 @@ def ridge_regression(y, tx, lambda_):
 
     # add lambda_ contribution, otherwise linear regression
     if lambda_ != 0:
-        T += lambda_ * np.identity(M) / (2 * N)
+        T += lambda_ * (2*N) * np.identity(M)
         
     xy = np.dot(np.transpose(tx), y)
 
