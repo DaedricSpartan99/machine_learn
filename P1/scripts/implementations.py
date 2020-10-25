@@ -24,7 +24,7 @@ eps = 1e-5
     gamma = step factor in GD
 
 """
-def mini_batch_SDG(y, tx, grad_n, initial_w, max_iters, gamma):
+def mini_batch_SGD(y, tx, grad_n, initial_w, max_iters, gamma):
 
     N = len(y) # length of samples
     Nx = len(tx[0]) # length of arguments
@@ -82,19 +82,20 @@ def compute_cost(y, xt, w, fw, cost_fct):
     Particular case of RMSE implementations
 """
 
-def RMSE_fw(xt, w):
+def MSE_fw(xt, w):
 
     # X^t * w
-    return np.transpose(xt) * w
+    #return np.transpose(xt) * w
+    return np.dot(np.transpose(xt), w)
 
-def RMSE_cost_fct(errors):
+def MSE_cost_fct(errors):
 
     # euclidean_norm(errors) / 2
     return np.dot(errors, errors) / 2
 
 # compute cost for RMSE particular case
-def RMSE_cost(y, xt, w):
-    return compute_cost(y, xt, w, RMSE_fw, RMSE_cost_fct)
+def MSE_cost(y, xt, w):
+    return compute_cost(y, xt, w, MSE_fw, MSE_cost_fct)
 
 
 
@@ -120,9 +121,9 @@ def ridge_regression(y, tx, lambda_):
     # compute result following the formula: w * T = X^t * y
     w = np.linalg.solve(T, xy)
 
-    cost_fct = lambda y, tx, w: RMSE_cost(y, tx, w) - lambda_ * np.dot(w,w)
+    cost_fct = lambda y, tx, w: MSE_cost(y, tx, w) - lambda_ * np.dot(w,w)
     
-    return w, compute_cost(y, tx, w, RMSE_fw, cost_fct) 
+    return w, compute_cost(y, tx, w, MSE_fw, cost_fct) 
 
 
 def least_squares(y, tx):
@@ -142,5 +143,5 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     # compute optimal weight
     w = mini_batch_SDG(y, tx, grad_n, initial_w, max_iters, gamma)
 
-    return w, RMSE_cost(y, tx, w)
+    return w, MSE_cost(y, tx, w)
 
