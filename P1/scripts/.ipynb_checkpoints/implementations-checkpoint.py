@@ -164,17 +164,6 @@ def ridge_regression(y, tx, lambda_):
     
     return w, compute_cost(y, tx, w, MSE_fw, cost_fct) 
 
-# duplicate logistic regression
-def logistic_regression_modular(y, tx, initial_w, max_iters, gamma):
-
-    # gradient L_n formula: x_n * (sigma(x_n * w) - y_n)
-    grad_n = lambda yn, txn, w: txn * (logistic_sigma(np.dot(ntx, w)) - yn)
-
-    # compute optimal weight
-    w = mini_batch_SDG(y, tx, grad_n, initial_w, max_iters, gamma)
-
-    return w, MSE_cost(y, tx, w)
-
 
 def least_squares(y, tx):
     
