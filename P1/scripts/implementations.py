@@ -113,14 +113,15 @@ def ridge_regression(y, tx, lambda_):
     M = len(T[0]) # how many columns
 
     # add lambda_ contribution, otherwise linear regression
-    if lambda_ != 0:
+    if np.abs(lambda_) < eps:   # we consider any lammda < eps to be equal to 0
+        w = np.linalg.solve(tx,y)   
+    else:
         T += lambda_ * (2*N) * np.identity(M)
+        xy = np.dot(np.transpose(tx), y)
+        w = np.linalg.solve(T, xy) # compute result following the formula: w * T = X^t * y
+
         
-    xy = np.dot(np.transpose(tx), y)
-
-    # compute result following the formula: w * T = X^t * y
-    w = np.linalg.solve(T, xy)
-
+    #THIS PART STILL NEEDS TO BE CHECKED
     cost_fct = lambda y, tx, w: MSE_cost(y, tx, w) - lambda_ * np.dot(w,w)
     
     return w, compute_cost(y, tx, w, MSE_fw, cost_fct) 
