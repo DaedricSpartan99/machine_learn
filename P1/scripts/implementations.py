@@ -155,8 +155,8 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         # gradient L_n formula: x_n * (sigma(x_n * w) - y_n)
         tx_t=tx.T
         z = np.dot(tx, w)
-        z[z > 200] = 200
-        z[z < -200] = -200
+        z[z > 500] = 500
+        z[z < -500] = -500
 
         grad=tx_t.dot(sigmoid(z) - y)
 
@@ -219,14 +219,18 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
     
     """ --- ITERATIONS --- """
         
-    for iter in range(max_iter):
+    for iter in range(max_iters):
         
         # gradient L_n formula: x_n * (sigma(x_n * w) - y_n)
         tx_t=tx.T
-        grad=tx_t.dot( sigmoid (tx.dot(w))-y) + 2 * lambda_ * w
+        z = tx.dot(w)
+        z[z > 500] = 500
+        z[z < -500] = -500
+
+        grad=tx_t.dot( sigmoid (z)-y) + 2 * lambda_ * w
 
         # loss function
-        loss = np.sum(np.log(1. + np.exp(np.dot(tx, w)))) - np.dot(y.T, np.dot(tx, w)) + lambda_ * np.linalg.norm(w) ** 2
+        loss = np.sum(np.log(1. + np.exp(z))) - np.dot(y.T, np.dot(tx, w)) + lambda_ * np.linalg.norm(w) ** 2
 
         # weight
         w = w - gamma * grad
@@ -236,8 +240,8 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
         ws.append(w)
         
         # log info
-        if iter % 100 == 0:
-            print("Current iteration={i}, loss={l}".format(i=iter, l=loss))
+        #if iter % 100 == 0:
+        #    print("Current iteration={i}, loss={l}".format(i=iter, l=loss))
         
         # converge criterion
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:

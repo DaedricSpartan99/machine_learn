@@ -24,6 +24,7 @@ def main(da, cv):
 
     
     # TODO implement cross validation
+    #lambdas = [9e-06, 0.0212, 1.65e-05, 0.00027, 2.42e-06, 0.000309, 4e-05, 3.63e-10]
     lambdas = [9e-06, 0.0212, 1.65e-05, 0.00027, 2.42e-06, 0.000309, 4e-05, 3.63e-10]
 
     # Name of the training data
@@ -60,8 +61,9 @@ def main(da, cv):
     #method = methods[method_nb] 
 
     #method = "least_square"
-    #method = "ridge_regression"
-    method = "logistic_regression"
+    method = "ridge_regression"
+    #method = "logistic_regression"
+    #method = "reg_logistic_regression"
 
     diagnose = open('outputs/train_%s.txt' % (method), 'w')
     weights, prediction_train = training(TRAINING_DATA, lambdas, diagnose)
