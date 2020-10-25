@@ -44,53 +44,29 @@ def compute_gradient(y, tx, w):
 
 
 def least_squares_GD(y, tx, initial_w, max_iters, gamma):
+
     # Define parameters to store w and loss
     ws = [initial_w]
     losses = []
     w = initial_w
+
     #compute gradient and loss
     for n_iter in range(max_iters):
         gradient = compute_gradient(y,tx, w)
-        loss=compute_loss(y,tx,w)
-        w = w-gamma*gradient    #update w by the gradient
+        loss = compute_loss(y,tx,w)
+        w -= gamma * gradient    #update w by the gradient
         # store w and loss
         ws.append(w)
         losses.append(loss)
         #take the final ones
+
     w_opt=ws[-1]
     loss_opt=losses[-1]
     return w_opt,loss_opt
 
-"""
-def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
-    """
-    Generate a minibatch iterator for a dataset.
-    Takes as input two iterables (here the output desired values 'y' and the input data 'tx')
-    Outputs an iterator which gives mini-batches of `batch_size` matching elements from `y` and `tx`.
-    Data can be randomly shuffled to avoid ordering in the original data messing with the randomness of the minibatches.
-    Example of use :
-    for minibatch_y, minibatch_tx in batch_iter(y, tx, 32):
-        <DO-SOMETHING>
-    """
-    data_size = len(y)
-
-    if shuffle:
-        shuffle_indices = np.random.permutation(np.arange(data_size))
-        shuffled_y = y[shuffle_indices]
-        shuffled_tx = tx[shuffle_indices]
-    else:
-        shuffled_y = y
-        shuffled_tx = tx
-    for batch_num in range(num_batches):
-        start_index = batch_num * batch_size
-        end_index = min((batch_num + 1) * batch_size, data_size)
-        if start_index != end_index:
-            yield shuffled_y[start_index:end_index], shuffled_tx[start_index:end_index]
-"""
-
 ### FUNCTION 2 ###
 
-def least_squares_SGD(y, tx, initial_w, batch_size, max_iters, gamma):
+def least_squares_SGD(y, tx, initial_w, max_iters, gamma, batch_size = 1):
     if (batch_size>len(y)):
         print("The batch size was bigger than the whole dataset, it was downsized to match that of the dataset")
         batch_size=len(y)
@@ -98,16 +74,17 @@ def least_squares_SGD(y, tx, initial_w, batch_size, max_iters, gamma):
     losses = []
     w = initial_w
     for n_iter in range(max_iters):
+
         for minibatch_y, minibatch_tx in batch_iter(y, tx, batch_size): 
             gradient = compute_gradient(minibatch_y,minibatch_tx,w) # Can compute the normal gradient for each minibatch
-            loss=compute_loss(minibatch_y,minibatch_tx,w)
-        # TODO: update w by gradient
+            loss = compute_loss(minibatch_y,minibatch_tx,w)
+
         w = w-gamma*gradient
         # store w and loss
         ws.append(w)
         losses.append(loss)
-        print("Stochastic Gradient Descent({bi}/{ti}): loss={l}, w0={w0}, w1={w1}".format(
-              bi=n_iter, ti=max_iters - 1, l=loss, w0=w[0], w1=w[1]))
+        #print("Stochastic Gradient Descent({bi}/{ti}): loss={l}, w0={w0}, w1={w1}".format(
+              #bi=n_iter, ti=max_iters - 1, l=loss, w0=w[0], w1=w[1]))
     w_opt=ws[-1]
     loss_opt=losses[-1]
 
@@ -233,11 +210,11 @@ def least_squares(y, tx):
     # Compute weight as particular case of ridge regression, _lambda = 0
     return ridge_regression(y, tx, 0)
 
-"""
-def logistic_sigmoid(z):
-    arg = np.exp(z) 
-    return arg / (1 + arg)
-"""
+def sigmoid(z):
+    arg = np.exp(-z) 
+    if z.any() > 500:
+        arg = np.zeros(len(z))
+    return 1.0 / (arg + 1.0)
 
 ### FUNCTION 5 ###
 
@@ -274,11 +251,11 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     
     """ --- ITERATIONS --- """
         
-    for iter in range(max_iter):
+    for iter in range(max_iters):
         
         # gradient L_n formula: x_n * (sigma(x_n * w) - y_n)
         tx_t=tx.T
-        grad=tx_t.dot( sigmoid (tx.dot(w))-y)
+        grad=tx_t.dot( sigmoid(tx.dot(w)) - y)
 
         # loss function
         loss = np.sum(np.log(1. + np.exp(np.dot(tx, w)))) - np.dot(y.T, np.dot(tx, w))
@@ -291,8 +268,8 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         ws.append(w)
         
         # log info
-        if iter % 100 == 0:
-            print("Current iteration={i}, loss={l}".format(i=iter, l=loss))
+        #if iter % 100 == 0:
+        #    print("Current iteration={i}, loss={l}".format(i=iter, l=loss))
         
         # converge criterion
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:

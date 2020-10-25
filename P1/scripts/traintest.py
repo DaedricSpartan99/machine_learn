@@ -1,5 +1,5 @@
 from proj1_helpers import *
-from implementations import eps, ridge_regression, logistic_regression_mb
+from implementations import * #eps, ridge_regression, logistic_regression_mb
 
 def get_headers(data_path):
     """
@@ -82,11 +82,12 @@ def training(samples, lambdas):
         N = len(y)
 
         #w, loss = ridge_regression(y, xt, lambdas[idx])
-        w = np.random.rand(len(xt[0]))
-        w /= np.linalg.norm(w) # normalize it
-        print("Init w: ", w)
+        #w = np.random.rand(len(xt[0]))
+        #w /= np.linalg.norm(w) # normalize it
+        w = np.zeros(len(xt[0]))
         # use a gamma comparable to eps
-        w, loss = logistic_regression_mb(y, xt, w, 2000, 1e-6)
+        #w, loss = least_squares_SGD(y, xt, w, 500, 1e-6, 1)
+        w, loss = logistic_regression(y, xt, w, 500, 1e-6)
 
         # Get the percentage of wrong prediction
         ratio = wrong_pred_ratio(y, xt, w)

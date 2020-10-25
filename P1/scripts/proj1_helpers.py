@@ -53,13 +53,13 @@ def create_csv_submission(ids, y_pred, name):
 
 def compute_loss(y, tx, w):    #using MSE, give L not L_n
         e = y-tx.dot(w)
-        cost=(e.dot(e.T))/(2*y.shape[0])  #I think we can remove the .T in e.T
+        cost=(np.dot(e.T, e))/(2*y.shape[0])  #I think we can remove the .T in e.T
         return cost
 
 def compute_gradient(y, tx, w):
-    e = y-tx.dot(w)
-    tx_t=tx.T
-    return -tx_t.dot(e)/len(y)
+    e = y - tx.dot(w)
+    tx_t = np.transpose(tx)
+    return -tx_t.dot(e)/ len(y)
 
 # COMPUTE THE BATCHES FOR SGD
 
