@@ -1,6 +1,11 @@
 import numpy as np
 import random as rnd
 
+
+"""
+    Utils
+"""
+
 # define threshold constant
 eps = 1e-5
 
@@ -49,6 +54,56 @@ def mini_batch_SDG(y, tx, grad_n, initial_w, max_iters, gamma):
 
     return w
 
+"""
+    Compute the cost given a generic cost function.
+    - y: predictions vector
+    - xt: argument samples matrix
+    - w: eights
+    - fw: analytic expression for weight function.
+                It should take the xt, w as parameters.
+    - cost_fct: analytic expression of the cost function.
+                It should take the errors vector containing ( y_n )
+        
+"""
+def compute_cost(y, xt, w, fw, cost_fct):
+
+    # Errors evaluation
+    errors = y - fw(xt, w)
+
+    # Compute the cost
+    return np.mean(cost_fct(errors))
+
+
+
+
+
+
+"""
+    Particular case of RMSE implementations
+"""
+
+def RMSE_fw(xt, w):
+
+    # X^t * w
+    return np.transpose(xt) * w
+
+def RMSE_cost_fct(errors):
+
+    # euclidean_norm(errors) / 2
+    return np.dot(errors, errors) / 2
+
+# compute cost for RMSE particular case
+def RMSE_cost(y, xt, w):
+    return compute_cost(y, xt, w, RMSE_fw, RMSE_cost_fct)
+
+
+
+
+
+"""
+    Methods implementations
+"""
+
 def ridge_regression(y, tx, lambda_):
 
     # Compute optimal weights
@@ -65,10 +120,7 @@ def ridge_regression(y, tx, lambda_):
     # compute result following the formula: w * T = X^t * y
     w = np.linalg.solve(T, xy)
     
-    # compute loss
-    loss = compute_RMSE(y, tx, w)
-
-    return w, loss
+    return w, RMSE_cost(y, tx, w)
 
 
 def least_squares(y, tx):
@@ -88,5 +140,5 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     # compute optimal weight
     w = mini_batch_SDG(y, tx, grad_n, initial_w, max_iters, gamma)
 
-    return w, compute_RMSE(y, tx, w)
+    return w, RMSE_cost(y, tx, w)
 
