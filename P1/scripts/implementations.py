@@ -119,8 +119,10 @@ def ridge_regression(y, tx, lambda_):
 
     # compute result following the formula: w * T = X^t * y
     w = np.linalg.solve(T, xy)
+
+    cost_fct = lambda y, tx, w: RMSE_cost(y, tx, w) - lambda_ * np.dot(w,w)
     
-    return w, RMSE_cost(y, tx, w)
+    return w, compute_cost(y, tx, w, RMSE_fw, cost_fct) 
 
 
 def least_squares(y, tx):
