@@ -76,7 +76,7 @@ def main(da, cv):
     print('\nFor method %s: In total, there was %f of good predictions on the training set.\n' % (method, prediction_train))
 
     """ TESTING """
-    #test(TESTING_DATA, weights, 'submission.csv')
+    test(TESTING_DATA, weights, 'submission.csv')
 
 
 # parse entering argument to main

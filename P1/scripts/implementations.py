@@ -153,12 +153,18 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     for iter in range(max_iters):
         
         # gradient L_n formula: x_n * (sigma(x_n * w) - y_n)
-        tx_t=tx.T
+        tx_t= np.transpose(tx)
         z = np.dot(tx, w)
+        print("z = ", z)
         z[z > 500] = 500
         z[z < -500] = -500
 
         grad=tx_t.dot(sigmoid(z) - y)
+        print(np.linalg.norm(sigmoid(z)))
+        print(np.linalg.norm(y))
+        print(np.linalg.norm(tx))
+        print(np.linalg.norm(grad))
+        input()
 
         # loss function
         loss = np.sum(np.log(1. + np.exp(z))) - np.dot(y.T, np.dot(tx, w))
@@ -177,7 +183,6 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         # converge criterion
         if len(losses) > 1 and np.abs(losses[-1] - losses[-2]) < threshold:
             break
-            
     
     """ --- RETURN VALUES --- """
     return ws[-1], losses[-1]
@@ -234,6 +239,8 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
 
         # weight
         w = w - gamma * grad
+
+        print(np.linalg.norm(grad))
         
         # array filling
         losses.append(loss)
