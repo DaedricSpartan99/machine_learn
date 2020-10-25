@@ -59,9 +59,9 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
 
 
 
-
-
-
+"""
+    Pure mini-batch SGD algorithm
+"""
 def mini_batch_SGD(y, tx, grad_n, initial_w, max_iters, gamma):
 
     N = len(y) # length of samples
@@ -146,26 +146,27 @@ def MSE_cost(y, xt, w):
 def ridge_regression(y, tx, lambda_):
 
     # Compute optimal weights
-    T = np.dot(np.transpose(tx), tx) # dim(T) = M * M
     N = len(tx) # how many rows, TODO check
-    M = len(T[0]) # how many columns
+    M = len(tx[0]) # how many columns
+    w = None # declare w
 
     # add lambda_ contribution, otherwise linear regression
     if np.abs(lambda_) < eps:   # we consider any lammda < eps to be equal to 0
         w = np.linalg.solve(tx,y)   
     else:
-        T += lambda_ * (2*N) * np.identity(M)
+        T = np.dot(np.transpose(tx), tx) + lambda_ * (2*N) * np.identity(M) # dim(T) = M * M
         xy = np.dot(np.transpose(tx), y)
         w = np.linalg.solve(T, xy) # compute result following the formula: w * T = X^t * y
-
         
     #THIS PART STILL NEEDS TO BE CHECKED
     cost_fct = lambda y, tx, w: MSE_cost(y, tx, w) - lambda_ * np.dot(w,w)
     
     return w, compute_cost(y, tx, w, MSE_fw, cost_fct) 
 
-# duplicate logistic regression
-def logistic_regression_modular(y, tx, initial_w, max_iters, gamma):
+
+
+# logistic regression using mini-batch SGD
+def logistic_regression_mb(y, tx, initial_w, max_iters, gamma):
 
     # gradient L_n formula: x_n * (sigma(x_n * w) - y_n)
     grad_n = lambda yn, txn, w: txn * (logistic_sigma(np.dot(ntx, w)) - yn)
@@ -174,6 +175,7 @@ def logistic_regression_modular(y, tx, initial_w, max_iters, gamma):
     w = mini_batch_SDG(y, tx, grad_n, initial_w, max_iters, gamma)
 
     return w, MSE_cost(y, tx, w)
+
 
 
 def least_squares(y, tx):
