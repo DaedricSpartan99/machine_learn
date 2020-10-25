@@ -107,13 +107,13 @@ def RMSE_cost(y, xt, w):
 def ridge_regression(y, tx, lambda_):
 
     # Compute optimal weights
-    xx = np.dot(np.transpose(tx), tx)
-    # Add the lambda on the diagonal
-    T = xx
+    T = np.dot(np.transpose(tx), tx) # dim(T) = M * M
+    N = len(tx) # how many rows, TODO check
+    M = len(T[0]) # how many columns
 
+    # add lambda_ contribution, otherwise linear regression
     if lambda_ != 0:
-        # add lambda_ contribution, otherwise linear regression
-        T += lambda_ * np.identity(len(xx))
+        T += lambda_ * np.identity(M) / (2 * N)
         
     xy = np.dot(np.transpose(tx), y)
 
