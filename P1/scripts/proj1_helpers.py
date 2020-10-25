@@ -88,34 +88,33 @@ def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
         if start_index != end_index:
             yield shuffled_y[start_index:end_index], shuffled_tx[start_index:end_index]
 
-
-def compute_cost(y, xt, w, fw, cost_fct):
+def compute_cost(y, xt, w, cost_fct_n):
 
     # Errors evaluation
-    errors = y - fw(xt, w)
+    #errors = y - fw(xt, w)
 
     # Compute the cost
-    return np.mean(cost_fct(errors))
+    return np.mean(cost_fct_n(y, xt, w))
 
-
-
-   # Particular case of RMSE implementations
-
+# Particular case of RMSE implementations
 
 def MSE_fw(xt, w):
 
     # X^t * w
     #return np.transpose(xt) * w
-    return np.dot(np.transpose(xt), w)
+    return np.dot(xt, w)
 
-def MSE_cost_fct(errors):
+# elementwise cost function
+def MSE_cost_fct(y, xt, w):
+
+    errors = y - MSE_fw(xt, w)
 
     # euclidean_norm(errors) / 2
-    return np.dot(errors, errors) / 2
+    return np.power(errors,2) / 2
 
 # compute cost for RMSE particular case
 def MSE_cost(y, xt, w):
-    return compute_cost(y, xt, w, MSE_fw, MSE_cost_fct)
+    return compute_cost(y, xt, w, MSE_cost_fct)
 
 
 

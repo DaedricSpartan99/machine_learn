@@ -42,13 +42,37 @@ def main(da, cv):
     if da:
         data_analysis_splitting(TRAIN, TEST, TRAINING_DATA, TESTING_DATA)
 
-    weights, prediction_train = training(TRAINING_DATA, lambdas)
+    """
+    methods = [[least_squares_GD, w, 2000, 1e-6],
+               [least_squares_SGD, w, 500, 1e-6, 1],
+               [ridge_regression, 9e-6], 
+               [least_squares], 
+               [logistic_regression, w, 500, 1e-6], 
+               [reg_logistic_regression, w, 500, 1e-6, 9e-6]]
+    """
 
-    print(u'\nIn total, there was {0:2f}% of good predictions on the training set.\n'.format(prediction_train))
+    #W = []
+    #P = []
+    
+    #for param in methods:
+    #method = param[0]
+    #method_nb = 1 
+    #method = methods[method_nb] 
 
-    #""" TESTING """
-    # TODO testing data
-    #test(["test.csv"], weights, 'submission.csv')
+    #method = "least_square"
+    #method = "ridge_regression"
+    method = "logistic_regression"
+
+    diagnose = open('outputs/train_%s.txt' % (method), 'w')
+    weights, prediction_train = training(TRAINING_DATA, lambdas, diagnose)
+    #W.append(weights)
+    #P.append(prediction_train)
+    diagnose.close()
+
+    print('\nFor method %s: In total, there was %f of good predictions on the training set.\n' % (method, prediction_train))
+
+    """ TESTING """
+    #test(TESTING_DATA, weights, 'submission.csv')
 
 
 # parse entering argument to main

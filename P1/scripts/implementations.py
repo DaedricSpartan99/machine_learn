@@ -23,21 +23,6 @@ eps = 1e-5
 
     max_iters = maximum number of iterations
     gamma = step factor in GD
-
-"""
-
-"""
-# COMPUTE LOSS & GRADIENT for least square GD
-
-def compute_loss(y, tx, w):    #using MSE, give L not L_n
-        e = y-tx.dot(w)
-        cost=(e.dot(e.T))/(2*y.shape[0])  #I think we can remove the .T in e.T
-        return cost
-
-def compute_gradient(y, tx, w):
-    e = y-tx.dot(w)
-    tx_t=tx.T
-    return -tx_t.dot(e)/len(y)
 """
 
 ### FUNCTION 1 ###
@@ -91,90 +76,6 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma, batch_size = 1):
     return w_opt,loss_opt
 
 
-# I don't think we even need this function anymore, plus we deleted grad_n
-"""
-
-def mini_batch_SGD(y, tx, grad_n, initial_w, max_iters, gamma):
-
-    N = len(y) # length of samples
-    Nx = len(tx[0]) # length of arguments
-    w = initial_w
-    old_w = initial_w - np.ones(Nx)
-
-    # iterate
-    while max_iters > 0 and (np.norm(w - old_w) / Nx) > eps: # TODO add threshold condition
-
-        # generate random integer to consider
-        NB = rnd.randint(1,N)
-        B = random.sample(range(N), NB)
-
-        # compute stochastic gradient
-        g = np.zeros(Nx)
-        for n in B:
-            g += grad_n(grad_n(y[n], tx[n], w))
-        g /= NB
-
-        old_w = w
-
-        # forward step w
-        w -= gamma * g
-
-        # decrement step
-        max_iters -= 1
-
-    return w
-"""
-
-"""
-    Compute the cost given a generic cost function.
-    - y: predictions vector
-    - xt: argument samples matrix
-    - w: eights
-    - fw: analytic expression for weight function.
-                It should take the xt, w as parameters.
-    - cost_fct: analytic expression of the cost function.
-                It should take the errors vector containing ( y_n )
-        
-"""
-
-
-"""
-def compute_cost(y, xt, w, fw, cost_fct):
-
-    # Errors evaluation
-    errors = y - fw(xt, w)
-
-    # Compute the cost
-    return np.mean(cost_fct(errors))
-
-
-
-
-
-
-"""
-   # Particular case of RMSE implementations
-"""
-
-def MSE_fw(xt, w):
-
-    # X^t * w
-    #return np.transpose(xt) * w
-    return np.dot(np.transpose(xt), w)
-
-def MSE_cost_fct(errors):
-
-    # euclidean_norm(errors) / 2
-    return np.dot(errors, errors) / 2
-
-# compute cost for RMSE particular case
-def MSE_cost(y, xt, w):
-    return compute_cost(y, xt, w, MSE_fw, MSE_cost_fct)
-
-
-"""
-
-
 """
     Methods implementations
 """
@@ -185,22 +86,20 @@ def ridge_regression(y, tx, lambda_):
 
     # Compute optimal weights
     T = np.dot(np.transpose(tx), tx) # dim(T) = M * M
+    xy = np.dot(np.transpose(tx), y)
     N = len(tx) # how many rows, TODO check
     M = len(T[0]) # how many columns
 
     # add lambda_ contribution, otherwise linear regression
-    if np.abs(lambda_) < eps:   # we consider any lammda < eps to be equal to 0
-        w = np.linalg.solve(tx,y)   
-    else:
+    if np.abs(lambda_) > eps:   # we consider any lammda < eps to be equal to 0
         T += lambda_ * (2*N) * np.identity(M)
-        xy = np.dot(np.transpose(tx), y)
-        w = np.linalg.solve(T, xy) # compute result following the formula: w * T = X^t * y
 
+    w = np.linalg.solve(T,xy)   
         
     #THIS PART STILL NEEDS TO BE CHECKED
-    cost_fct = lambda y, tx, w: MSE_cost(y, tx, w) - lambda_ * np.dot(w,w)
+    cost_fct = lambda y, tx, w: MSE_cost(y, tx, w) - lambda_ * np.dot(w.T,w)
     
-    return w, compute_cost(y, tx, w, MSE_fw, cost_fct) 
+    return w, compute_cost(y, tx, w, cost_fct) 
 
 
 ### FUNCTION 3 ###
@@ -212,8 +111,8 @@ def least_squares(y, tx):
 
 def sigmoid(z):
     arg = np.exp(-z) 
-    if z.any() > 500:
-        arg = np.zeros(len(z))
+    #arg[z > 100] = 0.0
+        #arg = np.zeros(len(z))
     return 1.0 / (arg + 1.0)
 
 ### FUNCTION 5 ###
@@ -255,10 +154,14 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         
         # gradient L_n formula: x_n * (sigma(x_n * w) - y_n)
         tx_t=tx.T
-        grad=tx_t.dot( sigmoid(tx.dot(w)) - y)
+        z = np.dot(tx, w)
+        z[z > 200] = 200
+        z[z < -200] = -200
+
+        grad=tx_t.dot(sigmoid(z) - y)
 
         # loss function
-        loss = np.sum(np.log(1. + np.exp(np.dot(tx, w)))) - np.dot(y.T, np.dot(tx, w))
+        loss = np.sum(np.log(1. + np.exp(z))) - np.dot(y.T, np.dot(tx, w))
 
         # weight
         w = w - gamma * grad

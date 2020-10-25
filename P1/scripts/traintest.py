@@ -61,7 +61,7 @@ def wrong_pred_ratio(y, tx, w):
 
 
 
-def training(samples, lambdas):
+def training(samples, lambdas, outfile):
     """
         Train on the data with the degree_star and lambda_star found by the cross-validation.
 
@@ -72,6 +72,8 @@ def training(samples, lambdas):
     total = 0 # total number of samples
     meanGP = 0 # mean of good prediction
 
+    print("index  accuracy  loss", file= outfile)
+
     for idx, data in enumerate(samples):
         # Print that we start the training
         print(u'Training with file {0:s}'.format(data))
@@ -81,19 +83,29 @@ def training(samples, lambdas):
         y, xt, ids = load_csv_data(data)
         N = len(y)
 
-        #w, loss = ridge_regression(y, xt, lambdas[idx])
-        #w = np.random.rand(len(xt[0]))
-        #w /= np.linalg.norm(w) # normalize it
         w = np.zeros(len(xt[0]))
-        # use a gamma comparable to eps
+    
+        #w, loss = least_squares_GD(y, xt, w, 2000, 1e-6)
+
         #w, loss = least_squares_SGD(y, xt, w, 500, 1e-6, 1)
+
+        #w, loss = least_squares(y, xt)
+        
+        #w, loss = ridge_regression(y, xt, lambdas[idx])
+
         w, loss = logistic_regression(y, xt, w, 500, 1e-6)
+        
+        #w, loss = reg_logistic_regression(y, xt, lambdas[idx], w, 500, 1e-6)
 
         # Get the percentage of wrong prediction
         ratio = wrong_pred_ratio(y, xt, w)
 
-        print('  Good prediction: %.3g' % (100. * (1. - ratio)))
+        accuracy = 100. * (1. - ratio)
+
+        print('  Good prediction: %.3g' % (accuracy))
         print('  Loss: %.3g' % loss)
+
+        print("%d  %.3g  %.3g" % (idx, accuracy, loss), file=outfile)
 
         # Update the total number of entries tested/trained
         total += N
@@ -103,6 +115,7 @@ def training(samples, lambdas):
         weights.append(w)
 
     return weights, 100 * meanGP / total
+
 
 def test(TESTING_DATA, weights, output_name):
     """

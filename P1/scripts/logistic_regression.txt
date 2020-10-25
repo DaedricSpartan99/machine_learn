@@ -22,3 +22,38 @@ Training with file train_jet_2_wout_mass.csv
   Loss: -3.62e+08
 Training with file train_jet_2_with_mass.csv
 -----------------------------------------------------
+Training with file train_jet_0_wout_mass.csv
+-----------------------------------------------------
+  Good prediction: 94
+  Loss: -8.55e+09
+Training with file train_jet_0_with_mass.csv
+-----------------------------------------------------
+  Good prediction: 67.6
+  Loss: -1.89e+10
+Training with file train_jet_1_wout_mass.csv
+-----------------------------------------------------
+  Good prediction: 90.7
+  Loss: -1.49e+09
+Training with file train_jet_1_with_mass.csv
+-----------------------------------------------------
+  Good prediction: 61.4
+  Loss: -9.41e+09
+Training with file train_jet_2_wout_mass.csv
+-----------------------------------------------------
+  Good prediction: 84.2
+  Loss: -3.62e+08
+Training with file train_jet_2_with_mass.csv
+-----------------------------------------------------
+  Good prediction: 57.4
+  Loss: inf
+Training with file train_jet_3_wout_mass.csv
+-----------------------------------------------------
+  Good prediction: 93
+  Loss: -3.29e+08
+Training with file train_jet_3_with_mass.csv
+-----------------------------------------------------
+  Good prediction: 68
+  Loss: -1.38e+10
+
+In total, there was 67.756671% of good predictions on the training set.
+
