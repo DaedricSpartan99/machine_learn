@@ -91,11 +91,11 @@ def training(samples, lambdas, outfile):
 
         #w, loss = least_squares(y, xt)
         
-        #w, loss = ridge_regression(y, xt, lambdas[idx])
+        w, loss = ridge_regression(y, xt, 9e-03)
 
-        w, loss = logistic_regression(y, xt, w, 500, 1e-6)
+        #w, loss = logistic_regression(y, xt, w, 500, 1e-3)
         
-        #w, loss = reg_logistic_regression(y, xt, lambdas[idx], w, 500, 1e-6)
+        #w, loss = reg_logistic_regression(y, xt, 9e-06, w, 500, 1e-6)
 
         # Get the percentage of wrong prediction
         ratio = wrong_pred_ratio(y, xt, w)
@@ -115,6 +115,15 @@ def training(samples, lambdas, outfile):
         weights.append(w)
 
     return weights, 100 * meanGP / total
+
+
+def predict_labels(weights, data):
+    """Generates class predictions given weights, and a test data matrix"""
+    y_pred = np.dot(data, weights)
+    y_pred[np.where(y_pred <= 0)] = -1
+    y_pred[np.where(y_pred > 0)] = 1
+
+    return y_pred
 
 
 def test(TESTING_DATA, weights, output_name):
@@ -141,7 +150,7 @@ def test(TESTING_DATA, weights, output_name):
         #                                 ct=ct[idx], sqrt=sqrt[idx], square=square[idx])
 
         # Predict the labels
-        y_pred.append(predict_labels(weights[idx], tx_test))
+        y_pred.append(predict_labels(weights[idx], x_test))
         ids_pred.append(ids_test)
 
     # Put all the prediction together given the IDs
