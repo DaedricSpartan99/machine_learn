@@ -1,5 +1,5 @@
 from proj1_helpers import *
-from implementations import ridge_regression
+from implementations import eps, ridge_regression, logistic_regression_mb
 
 def get_headers(data_path):
     """
@@ -81,16 +81,18 @@ def training(samples, lambdas):
         y, xt, ids = load_csv_data(data)
         N = len(y)
 
-        # TODO Ridge Regression to get the best weights
-        #x_train = build_poly_cross_terms(x_train, degree_star[idx],
-        #                                  ct=ct[idx], sqrt=sqrt[idx], square=square[idx])
-
-        w, _ = ridge_regression(y, xt, lambdas[idx])
+        #w, loss = ridge_regression(y, xt, lambdas[idx])
+        w = np.random.rand(len(xt[0]))
+        w /= np.linalg.norm(w) # normalize it
+        print("Init w: ", w)
+        # use a gamma comparable to eps
+        w, loss = logistic_regression_mb(y, xt, w, 2000, 1e-6)
 
         # Get the percentage of wrong prediction
         ratio = wrong_pred_ratio(y, xt, w)
 
-        print(u'  Good prediction: {0:f}'.format(100. * (1. - ratio)))
+        print('  Good prediction: %.3g' % (100. * (1. - ratio)))
+        print('  Loss: %.3g' % loss)
 
         # Update the total number of entries tested/trained
         total += N
