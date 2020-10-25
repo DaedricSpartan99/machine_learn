@@ -131,7 +131,7 @@ def least_squares(y, tx):
     # Compute weight as particular case of ridge regression, _lambda = 0
     return ridge_regression(y, tx, 0)
 
-def logistic_sigmoid(z):
+def sigmoid(z):
     arg = np.exp(z) 
     return arg / (1 + arg)
 
