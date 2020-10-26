@@ -30,6 +30,9 @@ eps = 1e-5
 
 def least_squares_GD(y, tx, initial_w, max_iters, gamma):
 
+    if initial_w is None:
+        initial_w = np.ones(len(tx[0]))
+
     # Define parameters to store w and loss
     ws = [initial_w]
     losses = []
@@ -52,6 +55,11 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
 ### FUNCTION 2 ###
 
 def least_squares_SGD(y, tx, initial_w, max_iters, gamma, batch_size = 1):
+
+
+    if initial_w is None:
+        initial_w = np.ones(len(tx[0]))
+
     if (batch_size>len(y)):
         print("The batch size was bigger than the whole dataset, it was downsized to match that of the dataset")
         batch_size=len(y)
@@ -111,8 +119,8 @@ def least_squares(y, tx):
 
 def sigmoid(z):
     arg = np.exp(-z) 
-    print("exp(-z) = ", arg)
-    arg[z > 700] = 0.0
+    #print("exp(-z) = ", arg)
+    #arg[z > 700] = 0.0
         #arg = np.zeros(len(z))
     return 1.0 / (arg + 1.0)
 
@@ -142,6 +150,9 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
           
     """
     
+    if initial_w is None:
+        initial_w = np.ones(len(tx[0]))
+
     losses = []                   #loss array
     
     ws = [initial_w]              #weight array
@@ -149,7 +160,7 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
     
     threshold = 1e-8
 
-    print("w = ", w)
+    #print("w = ", w)
     
     """ --- ITERATIONS --- """
         
@@ -158,18 +169,18 @@ def logistic_regression(y, tx, initial_w, max_iters, gamma):
         # gradient L_n formula: x_n * (sigma(x_n * w) - y_n)
         tx_t = np.transpose(tx)
         z = np.dot(tx, w)
-        print("z = ", z)
-        #z[z > 500] = 500
-        #z[z < -500] = -500
+        #print("z = ", z)
+        z[z > 500] = 500
+        z[z < -500] = -500
 
         grad = np.dot(tx_t, sigmoid(z) - y)
-        print("|sigma(Xw)| = ", np.linalg.norm(sigmoid(z)))
-        print("|grad| = ", np.linalg.norm(grad))
+        #print("|sigma(Xw)| = ", np.linalg.norm(sigmoid(z)))
+        #print("|grad| = ", np.linalg.norm(grad))
 
         # loss function
         loss = np.sum(np.log(1. + np.exp(z))) - np.dot(y.T, np.dot(tx, w))
-        print("Loss = ", loss)
-        input("Tap enter to continue...")
+        #print("Loss = ", loss)
+        #input("Tap enter to continue...")
 
         # weight
         w = w - gamma * grad
@@ -217,6 +228,9 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
           
     """
     
+    if initial_w is None:
+        initial_w = np.ones(len(tx[0]))
+
     losses = []                   #loss array
     
     ws = [initial_w]              #weight array
@@ -242,7 +256,7 @@ def reg_logistic_regression(y, tx, lambda_, initial_w, max_iters, gamma):
         # weight
         w = w - gamma * grad
 
-        print(np.linalg.norm(grad))
+        #print(np.linalg.norm(grad))
         
         # array filling
         losses.append(loss)
