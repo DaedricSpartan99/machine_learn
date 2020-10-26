@@ -1,0 +1,164 @@
+Erasing Nan
+Found 1580052 Nan, substituted with 44.749987
+Performing a better conditioning
+Max:  49.68021567554928
+Min:  44.68717067554928
+Conditioning:  1.1117332989428206
+Press enter to continue...
+Testing:  least_squares_GD
+Current iteration=0, loss=0.5
+Current iteration=100, loss=0.4506374696299128
+Current iteration=200, loss=0.45063686593718494
+Current iteration=300, loss=0.4506364672981242
+Current iteration=400, loss=0.4506360686657646
+  Good prediction: 65.8
+  Loss: 0.451
+Testing:  least_squares_GD
+Current iteration=0, loss=0.4503308322292781
+Current iteration=100, loss=0.45032996652275925
+Current iteration=200, loss=0.4503295716391001
+Current iteration=300, loss=0.4503291767631362
+Current iteration=400, loss=0.4503287818929095
+  Good prediction: 65.6
+  Loss: 0.45
+Testing:  least_squares_GD
+Current iteration=0, loss=0.45044807753512534
+Current iteration=100, loss=0.45044760667722367
+Current iteration=200, loss=0.4504472080488192
+Current iteration=300, loss=0.45044680942658444
+Current iteration=400, loss=0.45044641081022346
+  Good prediction: 65.7
+  Loss: 0.45
+Testing:  least_squares_GD
+Current iteration=0, loss=0.45013460075306166
+Current iteration=100, loss=0.4501337038298708
+Current iteration=200, loss=0.45013329587505096
+Current iteration=300, loss=0.4501328879283237
+Current iteration=400, loss=0.4501324799876583
+  Good prediction: 65.5
+  Loss: 0.45
+Testing:  least_squares_GD
+Current iteration=0, loss=0.45074790047013763
+Current iteration=100, loss=0.45074559532284575
+Current iteration=200, loss=0.45074519109051353
+Current iteration=300, loss=0.450744786872044
+Current iteration=400, loss=0.4507443826595413
+  Good prediction: 65.9
+  Loss: 0.451
+
+For method <function least_squares_GD at 0x7f3eef165310>: In total, there was 65.699200 of good predictions on the training set.
+
+Testing:  least_squares_SGD
+Current iteration=0, loss=0.235340337590776
+Current iteration=100, loss=0.1695931570373885
+Current iteration=200, loss=0.6834008074277298
+Current iteration=300, loss=1.2817899077495154
+Current iteration=400, loss=0.266981937839822
+  Good prediction: 65.7
+  Loss: 0.332
+Testing:  least_squares_SGD
+Current iteration=0, loss=0.23545831379705437
+Current iteration=100, loss=0.08150484164754511
+Current iteration=200, loss=0.12138428789317628
+Current iteration=300, loss=0.3009575892405756
+Current iteration=400, loss=1.2071029810765947
+  Good prediction: 65.9
+  Loss: 0.966
+Testing:  least_squares_SGD
+Current iteration=0, loss=0.8630040498195953
+Current iteration=100, loss=1.1085121156372226
+Current iteration=200, loss=0.27408569774718056
+Current iteration=300, loss=0.44094053764484725
+Current iteration=400, loss=0.22968044738738955
+  Good prediction: 65.7
+  Loss: 1.23
+Testing:  least_squares_SGD
+Current iteration=0, loss=0.2353088163746166
+Current iteration=100, loss=0.25802239431910384
+Current iteration=200, loss=0.44361250559690546
+Current iteration=300, loss=0.11581699388880858
+Current iteration=400, loss=0.23923911041605378
+  Good prediction: 65.6
+  Loss: 0.991
+Testing:  least_squares_SGD
+Current iteration=0, loss=0.2354525321787877
+Current iteration=100, loss=0.32748029257312067
+Current iteration=200, loss=0.875984834839952
+Current iteration=300, loss=0.13546886643406927
+Current iteration=400, loss=0.24651007800085675
+  Good prediction: 65.8
+  Loss: 0.178
+
+For method <function least_squares_SGD at 0x7f3eef1653a0>: In total, there was 65.756800 of good predictions on the training set.
+
+Testing:  ridge_regression
+  Good prediction: 74.6
+  Loss: -1.65
+Testing:  ridge_regression
+  Good prediction: 74.5
+  Loss: -1.7
+Testing:  ridge_regression
+  Good prediction: 74.8
+  Loss: -1.68
+Testing:  ridge_regression
+  Good prediction: 74.2
+  Loss: -1.69
+Testing:  ridge_regression
+  Good prediction: 74.6
+  Loss: -1.66
+
+For method <function ridge_regression at 0x7f3eef165430>: In total, there was 74.548400 of good predictions on the training set.
+
+Testing:  least_squares
+  Good prediction: 74.3
+  Loss: 0.34
+Testing:  least_squares
+  Good prediction: 74.3
+  Loss: 0.339
+Testing:  least_squares
+  Good prediction: 74.5
+  Loss: 0.34
+Testing:  least_squares
+  Good prediction: 74.7
+  Loss: 0.34
+Testing:  least_squares
+  Good prediction: 74.7
+  Loss: 0.34
+
+For method <function least_squares at 0x7f3eef1654c0>: In total, there was 74.481200 of good predictions on the training set.
+
+Testing:  logistic_regression
+  Good prediction: 65.7
+  Loss: -1.19e+11
+Testing:  logistic_regression
+  Good prediction: 65.9
+  Loss: -1.18e+11
+Testing:  logistic_regression
+  Good prediction: 65.9
+  Loss: -1.18e+11
+Testing:  logistic_regression
+  Good prediction: 65.5
+  Loss: -1.2e+11
+Testing:  logistic_regression
+  Good prediction: 65.7
+  Loss: -1.19e+11
+
+For method <function logistic_regression at 0x7f3eef1655e0>: In total, there was 65.739200 of good predictions on the training set.
+
+Testing:  reg_logistic_regression
+  Good prediction: 66.1
+  Loss: -1.18e+11
+Testing:  reg_logistic_regression
+  Good prediction: 65.8
+  Loss: -1.19e+11
+Testing:  reg_logistic_regression
+  Good prediction: 65.6
+  Loss: -1.19e+11
+Testing:  reg_logistic_regression
+  Good prediction: 65.8
+  Loss: -1.19e+11
+Testing:  reg_logistic_regression
+  Good prediction: 66.2
+  Loss: -1.17e+11
+
+For method <function reg_logistic_regression at 0x7f3eef165670>: In total, there was 65.908000 of good predictions on the training set.
