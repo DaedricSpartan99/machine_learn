@@ -113,7 +113,7 @@ def predict():
         print("Best lambda: ", lambda_best)
 
         # generate other 8 lambdas around the minimum
-        lambdas = np.linspace(lambda_best * (1.0 - 0.5 / (i+1)), lambda_best * (1.0 + 0.5 / (i+1)), 32)
+        lambdas = np.linspace(lambda_best * (1.0 - 0.2 / (i+1)), lambda_best * (1.0 + 0.2 / (i+1)), 8)
     
     print("Lambdas: ", lambdas)
     print("Using weight: ", weights[minloss_index])
