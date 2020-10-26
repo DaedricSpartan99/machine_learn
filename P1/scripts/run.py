@@ -61,7 +61,7 @@ def methods_test():
         P = []
     
         for iter in range(5):
-            w, accuracy, _ = training(y, xt, method, args[1:])
+            w, accuracy, _ = training(y, xt, method, *args[1:])
             weights.append(w)
             P.append(accuracy)
 
