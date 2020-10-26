@@ -13,7 +13,7 @@ def check_file_exist(filename):
         # If can open, TRAIN becomes the file descriptor
         open(filename, 'r')
     except:
-        raise NameError('Cannot open file %s! Are you sure it exists in this directory' % TRAIN)
+        raise NameError('File %s not found. Copy or link it here...' % TRAIN)
 
 def main(test):
     check_file_exist(TRAIN)
@@ -123,8 +123,6 @@ def predict():
         print("%.12g  %12g" % (lamb, loss))
 
     print()
-
-    #TODO  find local minimum lambda_
     
     print("Treating testing data")
     _, xt, ids = load_csv_data(TEST)

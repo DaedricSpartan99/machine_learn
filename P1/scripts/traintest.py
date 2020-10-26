@@ -28,7 +28,7 @@ def wrong_pred_ratio(y, tx, w):
 
 def training(y, xt, method, *args, **kargs):
     
-    print("Training: ", method.__name__)
+    print("Training method: ", method.__name__)
 
     N = len(y)
 
@@ -62,11 +62,14 @@ def training(y, xt, method, *args, **kargs):
 
 
 def test(xt, weights):
+
     # predict y
     y = np.dot(xt, weights)
+
     # transform them in 1, -1
-    y[np.where(y <= 0)] = -1
-    y[np.where(y > 0)] = 1
+    y[ np.where(y <= 0) ] =  -1
+    y[ np.where(y > 0) ] =  1
+
     return y
 
 
