@@ -40,13 +40,15 @@ def least_squares_GD(y, tx, initial_w, max_iters, gamma):
 
     #compute gradient and loss
     for n_iter in range(max_iters):
-        gradient = compute_gradient(y,tx, w)
+        gradient = compute_gradient(y,tx,w)
         loss = compute_loss(y,tx,w)
         w -= gamma * gradient    #update w by the gradient
         # store w and loss
         ws.append(w)
         losses.append(loss)
         #take the final ones
+        if n_iter % 100 == 0:
+            print("Current iteration={i}, loss={l}".format(i=n_iter, l=loss))
 
     w_opt=ws[-1]
     loss_opt=losses[-1]
@@ -76,6 +78,10 @@ def least_squares_SGD(y, tx, initial_w, max_iters, gamma, batch_size = 1):
         # store w and loss
         ws.append(w)
         losses.append(loss)
+
+        if n_iter % 100 == 0:
+            print("Current iteration={i}, loss={l}".format(i=n_iter, l=loss))
+
         #print("Stochastic Gradient Descent({bi}/{ti}): loss={l}, w0={w0}, w1={w1}".format(
               #bi=n_iter, ti=max_iters - 1, l=loss, w0=w[0], w1=w[1]))
     w_opt=ws[-1]

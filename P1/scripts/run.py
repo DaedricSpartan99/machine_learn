@@ -20,18 +20,36 @@ try:
 except:
     raise NameError('Cannot open file %s! Are you sure it exists in this directory' % TEST)
 
-methods = [[least_squares_GD, None, 500, 1e-6], 
-           [least_squares_SGD, None, 500, 1e-3, 1], 
-           [ridge_regression, 9e-6], 
-           [least_squares], 
-           [logistic_regression, None, 500, 1e-6], 
-           [reg_logistic_regression, 9e-6, None, 500, 1e-6]
-           ]
-
 y, xt, ids = load_csv_data(TRAIN)
 
-# filter data
-xt = filter_nan(xt)
+# filter -999 data and get best conditioning values
+print("Erasing Nan")
+(xt, mean, cursed) = erase_nan(xt)
+print("Found %d Nan, substituted with %f" % (len(cursed), mean))
+print("Performing a better conditioning")
+xt = shrink_to(xt, mean, 0.001)
+
+print("Max: ", xt.max())
+print("Min: ", xt.min())
+print("Conditioning: ", xt.max() / xt.min())
+
+# y order of 1
+# x order of mean
+#w = np.ones(len(xt[0])) / mean
+w = np.zeros(len(xt[0]))
+lambda_ = 9e-6
+gamma = 1e-6
+iters = 500
+                        
+methods = [[least_squares_GD, w, iters, gamma], 
+           [least_squares_SGD, w, iters, gamma, 1], 
+           [ridge_regression, lambda_], 
+           [least_squares], 
+           [logistic_regression, w, iters, gamma], 
+           [reg_logistic_regression, lambda_, w, iters, gamma]
+           ]
+
+input("Press enter to continue...")
 
 for args in methods:
     method = args[0]

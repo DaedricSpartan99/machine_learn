@@ -46,8 +46,47 @@ def create_csv_submission(ids, y_pred, name):
         writer.writeheader()
         for r1, r2 in zip(ids, y_pred):
             writer.writerow({'Id':int(r1),'Prediction':int(r2)})
-            
-            
+
+"""
+     Conditioning            
+"""
+
+# remove nan
+def erase_nan(xt):
+    cursed = []
+    mean = 0.0
+    N = len(xt)
+    M = len(xt[0])
+    count = 0
+
+    for i in range(N):
+        for j in range(M):
+            # if Nan
+            if np.abs(xt[i,j] + 999) < 1e-10:
+                cursed.append((i,j))
+            else:
+                mean += xt[i,j]
+                count += 1
+
+    mean /= count
+
+    for (i,j) in cursed:
+        xt[i,j] = mean
+
+    return xt, mean, cursed
+
+# restore nan
+def restore_nan(xt, cursed):
+    for (i,j) in cursed:
+        xt[i,j] = -999
+    return xt
+
+# shrink closer to mean
+def shrink_to(xt, mean, ratio):
+    return (xt - mean) * ratio + mean
+
+def shrink_back_from(xt, mean, ratio):
+    return (xt - mean) / ratio + mean
             
 # COMPUTE LOSS & GRADIENT for least square GD
 
@@ -58,10 +97,8 @@ def compute_loss(y, tx, w):    #using MSE, give L not L_n
 
 def compute_gradient(y, tx, w):
     e = y - tx.dot(w)
-    print(e)
     tx_t = np.transpose(tx)
-    output = -tx_t.dot(e)/ len(y)
-    return output
+    return - tx_t.dot(e)/ len(y)
 # COMPUTE THE BATCHES FOR SGD
 
 def batch_iter(y, tx, batch_size, num_batches=1, shuffle=True):
